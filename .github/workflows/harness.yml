@@ -1,0 +1,56 @@
+name: harness
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python deps
+        run: pip install pyyaml pytest
+
+      # The shipped skill must always pass the harness cleanly:
+      # zero FAILs AND zero WARNs for every skill under plugins/skill-kit/skills/.
+      - name: plugin skills — zero FAILs, zero WARNs
+        run: |
+          failed=0
+          for dir in plugins/skill-kit/skills/*/; do
+            [ -f "$dir/SKILL.md" ] || continue
+            echo "::group::$dir"
+            out=$(bash plugins/skill-kit/bin/check-skill "$dir") || { echo "$out"; echo "FAIL in $dir"; failed=1; echo "::endgroup::"; continue; }
+            echo "$out"
+            if echo "$out" | grep -qE '^  WARN  '; then
+              echo "WARNs not allowed in shipped plugin skills ($dir)"; failed=1
+            fi
+            echo "::endgroup::"
+          done
+          exit $failed
+
+      - name: Harness self-tests
+        run: bash plugins/skill-kit/tests/run-self-tests.sh
+
+      - name: Python eval-script tests
+        run: python -m pytest plugins/skill-kit/tests -q
+
+      - name: Validate plugin manifests parse as JSON
+        run: |
+          python - <<'EOF'
+          import json
+          for p in (".claude-plugin/marketplace.json",
+                    "plugins/skill-kit/.claude-plugin/plugin.json"):
+              with open(p, encoding="utf-8") as f:
+                  json.load(f)
+              print(f"ok: {p}")
+          EOF

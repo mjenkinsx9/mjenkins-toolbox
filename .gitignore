@@ -1,2 +1,9 @@
 # skill-kit run artifacts (written to the consuming project, not here, but ignore locally just in case)
 .skill-kit/
+
+# Python bytecode caches (pytest/importlib)
+__pycache__/
+*.pyc
+
+# local tool config (Serena)
+.serena/
