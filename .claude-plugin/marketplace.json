@@ -9,6 +9,7 @@
       "name": "skill-kit",
       "source": "./plugins/skill-kit",
       "description": "Author, evaluate, security-review, and autonomously improve Claude Agent Skills.",
+      "license": "MIT",
       "category": "development",
       "keywords": ["skills", "agent-skills", "authoring", "evaluation"]
     }
