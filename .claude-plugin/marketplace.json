@@ -28,6 +28,7 @@
         "repo": "mjenkinsx9/anchor"
       },
       "description": "Personal code review: deterministic CLI gathers diff/context/learnings; the active Claude session reasons over them.",
+      "license": "MIT",
       "category": "development",
       "keywords": [
         "code-review",
