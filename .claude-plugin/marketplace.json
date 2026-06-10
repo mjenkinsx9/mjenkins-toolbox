@@ -7,7 +7,10 @@
   "plugins": [
     {
       "name": "skill-kit",
-      "source": "./plugins/skill-kit",
+      "source": {
+        "source": "github",
+        "repo": "mjenkinsx9/skill-kit"
+      },
       "description": "Author, evaluate, security-review, and autonomously improve Claude Agent Skills.",
       "license": "MIT",
       "category": "development",

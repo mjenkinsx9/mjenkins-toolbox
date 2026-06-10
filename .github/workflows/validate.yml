@@ -1,0 +1,43 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate marketplace manifest
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+
+          with open(".claude-plugin/marketplace.json", encoding="utf-8") as f:
+              m = json.load(f)
+
+          problems = []
+          if not m.get("name"):
+              problems.append("marketplace name missing")
+          for p in m.get("plugins", []):
+              name = p.get("name", "<unnamed>")
+              if not p.get("description"):
+                  problems.append(f"{name}: description missing")
+              src = p.get("source")
+              ok_external = isinstance(src, dict) and src.get("source") == "github" and src.get("repo")
+              ok_relative = isinstance(src, str) and src.startswith("./")
+              if not (ok_external or ok_relative):
+                  problems.append(f"{name}: source must be a ./relative path or a github repo object")
+
+          for p in problems:
+              print(f"FAIL: {p}")
+          if problems:
+              sys.exit(1)
+          print(f"ok: {len(m['plugins'])} plugin(s) validated")
+          EOF
