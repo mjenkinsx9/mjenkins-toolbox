@@ -26,6 +26,7 @@ Or enable it everywhere by adding to `~/.claude/settings.json`:
 | Plugin | What it does |
 |---|---|
 | [`skill-kit`](plugins/skill-kit/) | Author, evaluate, security-review, and autonomously improve Claude Agent Skills in any project. Bundles the skill-building workflow as commands, the `improving-skills` autoresearch loop, reference protocols, and the static eval harness. |
+| [`anchor`](https://github.com/mjenkinsx9/anchor) | Personal code review (`/anchor`): review uncommitted/staged/branch/PR diffs in-session with severity-graded findings, per-repo learnings, and codebase maps. |
 
 Install one with:
 

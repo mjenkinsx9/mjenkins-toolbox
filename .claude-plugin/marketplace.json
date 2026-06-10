@@ -10,7 +10,26 @@
       "source": "./plugins/skill-kit",
       "description": "Author, evaluate, security-review, and autonomously improve Claude Agent Skills.",
       "category": "development",
-      "keywords": ["skills", "agent-skills", "authoring", "evaluation"]
+      "keywords": [
+        "skills",
+        "agent-skills",
+        "authoring",
+        "evaluation"
+      ]
+    },
+    {
+      "name": "anchor",
+      "source": {
+        "source": "github",
+        "repo": "mjenkinsx9/anchor"
+      },
+      "description": "Personal code review: deterministic CLI gathers diff/context/learnings; the active Claude session reasons over them.",
+      "category": "development",
+      "keywords": [
+        "code-review",
+        "git",
+        "diff"
+      ]
     }
   ]
 }
