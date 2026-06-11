@@ -35,6 +35,22 @@
         "git",
         "diff"
       ]
+    },
+    {
+      "name": "autogit",
+      "source": {
+        "source": "github",
+        "repo": "mjenkinsx9/autogit"
+      },
+      "description": "Auto-commits and pushes every agent turn in opted-in repos: stage → secrets-scan → commit → push, with one-command undo, quiet batching, and PR mode. Strictly per-repo opt-in via /autogit on.",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "git",
+        "automation",
+        "auto-push",
+        "hooks"
+      ]
     }
   ]
 }
