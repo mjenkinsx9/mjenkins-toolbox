@@ -7,7 +7,7 @@
 **Add the catalog once, then install any plugin from it — on any machine.**
 
 [![validate](https://github.com/mjenkinsx9/mjenkins-toolbox/actions/workflows/validate.yml/badge.svg)](https://github.com/mjenkinsx9/mjenkins-toolbox/actions/workflows/validate.yml)
-![Plugins](https://img.shields.io/badge/plugins-2-blue)
+![Plugins](https://img.shields.io/badge/plugins-3-blue)
 ![Made for Claude Code](https://img.shields.io/badge/made_for-Claude_Code-d97757)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
@@ -46,12 +46,14 @@ Or enable it everywhere by adding to `~/.claude/settings.json`:
 |---|---|
 | [`skill-kit`](https://github.com/mjenkinsx9/skill-kit) | Author, evaluate, security-review, and autonomously improve Claude Agent Skills — a 21-check static harness, live behavioral checks, empirical trigger measurement, blind value-add baselines, and the `improving-skills` autoresearch loop. |
 | [`anchor`](https://github.com/mjenkinsx9/anchor) | Personal code review (`/anchor`): review uncommitted/staged/branch/PR diffs in-session with severity-graded findings, per-repo learnings, and codebase maps. |
+| [`autogit`](https://github.com/mjenkinsx9/autogit) | **Auto-commits and pushes every agent turn** in opted-in repos: stage → secrets-scan → commit → push, with the turn's prompt as the commit subject. One-command undo, quiet batching, PR mode. Inert until you run `/autogit on` in a repo — installing it changes nothing by itself. *(Repo is private until it finishes testing — installable by the owner only for now.)* |
 
 Install with:
 
 ```
 /plugin install skill-kit@mjenkins-toolbox
 /plugin install anchor@mjenkins-toolbox
+/plugin install autogit@mjenkins-toolbox
 ```
 
 Updates ship from each plugin's own repo — pick them up with
