@@ -15,10 +15,11 @@
 
 ---
 
-This repo is a **plugin marketplace**: a single catalog
-([`marketplace.json`](.claude-plugin/marketplace.json)) that points at plugins
-living in their own repos. The catalog stays tiny; each plugin owns its code,
-CI, releases, and docs.
+This repo is a **plugin marketplace**: small agent-specific catalogs that point
+at plugins living in their own repos. Claude-compatible agents read
+[`marketplace.json`](.claude-plugin/marketplace.json); Codex reads
+[`marketplace.json`](.agents/plugins/marketplace.json). The catalogs stay tiny;
+each plugin owns its code, CI, releases, and docs.
 
 > **Format note.** Every coding agent has its own plugin format and its own
 > marketplace command — there is no single cross-vendor standard yet. Each
@@ -150,8 +151,8 @@ MCP-based extension model.
 
 ## ➕ Adding a plugin
 
-Each plugin lives in its own repo with a `.claude-plugin/plugin.json` manifest
-at the root. To list it here, add an entry to
+Each plugin lives in its own repo with agent-specific manifests at the root.
+To list it for Claude-compatible agents, add an entry to
 [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json):
 
 ```json
@@ -166,6 +167,21 @@ at the root. To list it here, add an entry to
 
 CI validates the catalog (manifest parses, every entry has a description and a
 resolvable source) on every push and PR.
+
+To list it for Codex, add the matching entry to
+[`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json):
+
+```json
+{
+  "name": "my-plugin",
+  "source": { "source": "url", "url": "mjenkinsx9/my-plugin", "ref": "main" },
+  "policy": {
+    "installation": "AVAILABLE",
+    "authentication": "ON_INSTALL"
+  },
+  "category": "Developer Tools"
+}
+```
 
 ## 📄 License
 

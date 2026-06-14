@@ -14,30 +14,69 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate marketplace manifest
+      - name: Validate marketplace manifests
         run: |
           python3 - <<'EOF'
           import json, sys
 
-          with open(".claude-plugin/marketplace.json", encoding="utf-8") as f:
-              m = json.load(f)
+          def validate_claude_manifest():
+              with open(".claude-plugin/marketplace.json", encoding="utf-8") as f:
+                  m = json.load(f)
 
-          problems = []
-          if not m.get("name"):
-              problems.append("marketplace name missing")
-          for p in m.get("plugins", []):
-              name = p.get("name", "<unnamed>")
-              if not p.get("description"):
-                  problems.append(f"{name}: description missing")
-              src = p.get("source")
-              ok_external = isinstance(src, dict) and src.get("source") == "github" and src.get("repo")
-              ok_relative = isinstance(src, str) and src.startswith("./")
-              if not (ok_external or ok_relative):
-                  problems.append(f"{name}: source must be a ./relative path or a github repo object")
+              problems = []
+              if not m.get("name"):
+                  problems.append("claude: marketplace name missing")
+              for p in m.get("plugins", []):
+                  name = p.get("name", "<unnamed>")
+                  if not p.get("description"):
+                      problems.append(f"claude:{name}: description missing")
+                  src = p.get("source")
+                  ok_external = isinstance(src, dict) and src.get("source") == "github" and src.get("repo")
+                  ok_relative = isinstance(src, str) and src.startswith("./")
+                  if not (ok_external or ok_relative):
+                      problems.append(f"claude:{name}: source must be a ./relative path or a github repo object")
+              return problems, len(m.get("plugins", []))
+
+          def validate_codex_manifest():
+              with open(".agents/plugins/marketplace.json", encoding="utf-8") as f:
+                  m = json.load(f)
+
+              problems = []
+              if not m.get("name"):
+                  problems.append("codex: marketplace name missing")
+              for p in m.get("plugins", []):
+                  name = p.get("name", "<unnamed>")
+                  if not name or name == "<unnamed>":
+                      problems.append("codex: plugin name missing")
+                  if not p.get("category"):
+                      problems.append(f"codex:{name}: category missing")
+                  policy = p.get("policy", {})
+                  if policy.get("installation") not in {"AVAILABLE", "NOT_AVAILABLE", "INSTALLED_BY_DEFAULT"}:
+                      problems.append(f"codex:{name}: invalid or missing policy.installation")
+                  if policy.get("authentication") not in {"ON_INSTALL", "ON_USE"}:
+                      problems.append(f"codex:{name}: invalid or missing policy.authentication")
+
+                  src = p.get("source")
+                  ok_string = isinstance(src, str) and src.startswith("./")
+                  ok_object = isinstance(src, dict) and src.get("source") in {"local", "url", "git-subdir"}
+                  if not (ok_string or ok_object):
+                      problems.append(f"codex:{name}: source must be ./relative or a Codex local/url/git-subdir object")
+                  elif isinstance(src, dict):
+                      if src.get("source") == "local" and not str(src.get("path", "")).startswith("./"):
+                          problems.append(f"codex:{name}: local source path must start with ./")
+                      if src.get("source") == "url" and not src.get("url"):
+                          problems.append(f"codex:{name}: url source needs url")
+                      if src.get("source") == "git-subdir" and (not src.get("url") or not src.get("path")):
+                          problems.append(f"codex:{name}: git-subdir source needs url and path")
+              return problems, len(m.get("plugins", []))
+
+          claude_problems, claude_count = validate_claude_manifest()
+          codex_problems, codex_count = validate_codex_manifest()
+          problems = claude_problems + codex_problems
 
           for p in problems:
               print(f"FAIL: {p}")
           if problems:
               sys.exit(1)
-          print(f"ok: {len(m['plugins'])} plugin(s) validated")
+          print(f"ok: {claude_count} Claude plugin(s), {codex_count} Codex plugin(s) validated")
           EOF

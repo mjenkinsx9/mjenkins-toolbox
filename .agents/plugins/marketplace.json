@@ -1,0 +1,47 @@
+{
+  "name": "mjenkins-toolbox",
+  "interface": {
+    "displayName": "mjenkins Toolbox"
+  },
+  "plugins": [
+    {
+      "name": "skill-kit",
+      "source": {
+        "source": "url",
+        "url": "mjenkinsx9/skill-kit",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "anchor",
+      "source": {
+        "source": "url",
+        "url": "mjenkinsx9/anchor",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "autogit",
+      "source": {
+        "source": "url",
+        "url": "mjenkinsx9/autogit",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
