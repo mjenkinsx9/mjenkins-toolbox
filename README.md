@@ -90,19 +90,6 @@ Docs: [Codex plugins](https://developers.openai.com/codex/plugins) ·
 [Build a plugin](https://developers.openai.com/codex/plugins/build) ·
 [CLI reference](https://developers.openai.com/codex/cli/reference)
 
-### Factory Droid — needs repackaging
-
-Droid plugins need a `.factory-plugin/plugin.json`. Once packaged:
-
-```
-droid plugin marketplace add https://github.com/mjenkinsx9/mjenkins-toolbox
-droid plugin install skill-kit@mjenkins-toolbox
-```
-
-Or use the `/plugins` slash command to browse marketplaces in-session.
-
-Docs: [Droid plugins](https://docs.factory.ai/cli/configuration/plugins)
-
 ### Gemini CLI — needs repackaging
 
 Gemini installs **one extension repo at a time** (no shared catalog), and
@@ -127,14 +114,6 @@ need a `.cursor-plugin/plugin.json`.
 
 Docs: [Cursor plugins](https://cursor.com/docs/plugins) ·
 [Authoring reference](https://cursor.com/docs/reference/plugins)
-
-### OpenCode — no marketplace
-
-OpenCode plugins are JS/TS modules loaded from `.opencode/plugins/` or from npm
-packages listed in config — there is no marketplace or GitHub-URL install. A
-skills/commands plugin would need to be rebuilt as an OpenCode plugin module.
-
-Docs: [OpenCode plugins](https://opencode.ai/docs/plugins/)
 
 ## 🧩 Plugins
 
@@ -162,15 +141,12 @@ update command (e.g. `/plugin update <name>`).
 | Claude Code | `/plugin marketplace add` | `.claude-plugin/plugin.json` | ✅ Works today |
 | GitHub Copilot CLI | `copilot plugin marketplace add` | reads `.claude-plugin/plugin.json` | ✅ Works today |
 | OpenAI Codex | `codex plugin marketplace add` | `.codex-plugin/plugin.json` | 🔧 Repackage |
-| Factory Droid | `droid plugin marketplace add` | `.factory-plugin/plugin.json` | 🔧 Repackage |
 | Gemini CLI | `gemini extensions install <repo>` (no catalog) | `gemini-extension.json` (MCP) | 🔧 Repackage |
 | Cursor | none (official marketplace + `/add-plugin`) | `.cursor-plugin/plugin.json` | 🔧 Repackage |
-| OpenCode | none (npm / local files) | JS/TS module | 🔧 Rebuild |
 
 "Repackage" means adding that ecosystem's manifest to each plugin repo. The
 portable core is **Agent Skills** (`SKILL.md`), which Claude Code, Codex,
-Copilot CLI, and Cursor all support; Gemini and OpenCode use different
-extension models.
+Copilot CLI, and Cursor all support; Gemini uses a different extension model.
 
 ## ➕ Adding a plugin
 
