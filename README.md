@@ -178,7 +178,7 @@ Docs: [Cursor plugins](https://cursor.com/docs/plugins) ·
 
 | Plugin | What it does |
 |---|---|
-| [`skill-kit`](https://github.com/mjenkinsx9/skill-kit) | Author, evaluate, security-review, and autonomously improve Agent Skills — a 21-check static harness, live behavioral checks, empirical trigger measurement, blind value-add baselines, and the `improving-skills` autoresearch loop. |
+| [`skill-kit`](https://github.com/mjenkinsx9/skill-kit) | Author, evaluate, security-review, and autonomously improve Agent Skills — a 21-check static harness, live behavioral checks, empirical trigger measurement, blind value-add baselines, PATH-visible helpers (`check-skill`, `value-add-test`, `goal-new-skill`, `goal-improve-skill`, `improving-skills`), and the `improving-skills` autoresearch loop. |
 | [`anchor`](https://github.com/mjenkinsx9/anchor) | Personal code review (`/anchor`): review uncommitted/staged/branch/PR diffs in-session with severity-graded findings, per-repo learnings, and codebase maps. |
 | [`autogit`](https://github.com/mjenkinsx9/autogit) | **Auto-commits and pushes every agent turn** in opted-in repos: stage → secrets-scan → commit → push, with the turn's prompt as the commit subject. One-command undo, quiet batching, PR mode. Inert until you run `/autogit on` in a repo — installing it changes nothing by itself. |
 
@@ -191,7 +191,25 @@ Once the marketplace is added, install by name (Claude Code syntax shown):
 ```
 
 Updates ship from each plugin's own repo — pick them up with your harness's
-update command (e.g. `/plugin update <name>` or `pi update --extensions`).
+update command (e.g. `/plugin update <name>` or `pi update --extensions`). If a
+harness keeps using an old plugin-cache version after a release, refresh the
+marketplace snapshot and reinstall that plugin. For Skill Kit, common commands
+are:
+
+```text
+# Claude Code
+/plugin update skill-kit
+
+# Codex
+codex plugin marketplace upgrade mjenkins-toolbox
+codex plugin remove skill-kit@mjenkins-toolbox
+codex plugin add skill-kit@mjenkins-toolbox
+
+# Pi: update the same source you installed
+pi update git:github.com/mjenkinsx9/skill-kit
+# or, for a local clone:
+pi update ~/github/skill-kit
+```
 
 ## 🥧 Pi capabilities
 
