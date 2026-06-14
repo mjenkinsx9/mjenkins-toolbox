@@ -21,20 +21,19 @@ living in their own repos. The catalog stays tiny; each plugin owns its code,
 CI, releases, and docs.
 
 > **Format note.** Every coding agent has its own plugin format and its own
-> marketplace command — there is no single cross-vendor standard yet. This
-> catalog and its plugins are authored in **Claude Code's** plugin format, so
-> Claude Code (and GitHub Copilot CLI, which reads the same manifest) work as-is.
-> The other harnesses below need the plugins repackaged into their format first
-> — see [Cross-harness support](#-cross-harness-support). Commands and doc links
-> below are verified against each tool's official documentation, but these
-> interfaces move quickly, so check the linked docs for your version.
+> marketplace command — there is no single cross-vendor standard yet. Each
+> plugin in this catalog ships the manifest for every harness below, so you can
+> install it in whichever agent you use — see
+> [Cross-harness support](#-cross-harness-support). Commands and doc links below
+> are verified against each tool's official documentation, but these interfaces
+> move quickly, so check the linked docs for your version.
 
 ## 📦 Installation
 
 **Installation differs by harness. If you use more than one, install in each
 one separately.**
 
-### Claude Code — works today
+### Claude Code
 
 ```
 /plugin marketplace add mjenkinsx9/mjenkins-toolbox
@@ -56,7 +55,7 @@ Or enable it everywhere by adding to `~/.claude/settings.json`:
 Docs: [Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces) ·
 [Plugins reference](https://code.claude.com/docs/en/plugins-reference)
 
-### GitHub Copilot CLI — works today
+### GitHub Copilot CLI
 
 Copilot CLI reads `.claude-plugin/plugin.json`, so the Claude-format plugins
 here are compatible.
@@ -72,11 +71,11 @@ and `/plugin install plugin@marketplace`.
 Docs: [Finding & installing plugins](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing) ·
 [CLI plugin reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference)
 
-### OpenAI Codex — needs repackaging
+### OpenAI Codex
 
-Codex has its own marketplace, but expects a `.codex-plugin/plugin.json` per
-plugin and a catalog at `.agents/plugins/marketplace.json` (different from this
-repo's Claude-format catalog). Once packaged:
+Codex has its own marketplace and expects a `.codex-plugin/plugin.json` per
+plugin and a catalog at `.agents/plugins/marketplace.json`, both of which the
+plugins ship:
 
 ```
 codex plugin marketplace add mjenkinsx9/mjenkins-toolbox
@@ -90,11 +89,11 @@ Docs: [Codex plugins](https://developers.openai.com/codex/plugins) ·
 [Build a plugin](https://developers.openai.com/codex/plugins/build) ·
 [CLI reference](https://developers.openai.com/codex/cli/reference)
 
-### Gemini CLI — needs repackaging
+### Gemini CLI
 
 Gemini installs **one extension repo at a time** (no shared catalog), and
-extensions use a `gemini-extension.json` manifest built around MCP servers.
-Install each plugin from its own repo once it ships a Gemini extension:
+extensions use a `gemini-extension.json` manifest, which each plugin ships.
+Install each plugin from its own repo:
 
 ```
 gemini extensions install https://github.com/mjenkinsx9/skill-kit
@@ -104,13 +103,13 @@ gemini extensions update skill-kit
 Docs: [Gemini CLI extensions](https://geminicli.com/docs/extensions/) ·
 [Extension reference](https://geminicli.com/docs/extensions/reference/)
 
-### Cursor — official marketplace only
+### Cursor
 
 Cursor installs from its own marketplace with `/add-plugin` (or the
 [cursor.com/marketplace](https://cursor.com/marketplace) UI). There is **no
 user command to add an arbitrary GitHub marketplace** — Teams/Enterprise can
-import a repo via **Dashboard → Settings → Plugins → Add Marketplace**. Plugins
-need a `.cursor-plugin/plugin.json`.
+import a repo via **Dashboard → Settings → Plugins → Add Marketplace**. Each
+plugin ships the `.cursor-plugin/plugin.json` Cursor expects.
 
 Docs: [Cursor plugins](https://cursor.com/docs/plugins) ·
 [Authoring reference](https://cursor.com/docs/reference/plugins)
@@ -136,17 +135,18 @@ update command (e.g. `/plugin update <name>`).
 
 ## 🌍 Cross-harness support
 
-| Harness | Marketplace command | Plugin manifest | Status |
-|---|---|---|---|
-| Claude Code | `/plugin marketplace add` | `.claude-plugin/plugin.json` | ✅ Works today |
-| GitHub Copilot CLI | `copilot plugin marketplace add` | reads `.claude-plugin/plugin.json` | ✅ Works today |
-| OpenAI Codex | `codex plugin marketplace add` | `.codex-plugin/plugin.json` | 🔧 Repackage |
-| Gemini CLI | `gemini extensions install <repo>` (no catalog) | `gemini-extension.json` (MCP) | 🔧 Repackage |
-| Cursor | none (official marketplace + `/add-plugin`) | `.cursor-plugin/plugin.json` | 🔧 Repackage |
+| Harness | Marketplace command | Plugin manifest |
+|---|---|---|
+| Claude Code | `/plugin marketplace add` | `.claude-plugin/plugin.json` |
+| GitHub Copilot CLI | `copilot plugin marketplace add` | reads `.claude-plugin/plugin.json` |
+| OpenAI Codex | `codex plugin marketplace add` | `.codex-plugin/plugin.json` |
+| Gemini CLI | `gemini extensions install <repo>` (no catalog) | `gemini-extension.json` (MCP) |
+| Cursor | none (official marketplace + `/add-plugin`) | `.cursor-plugin/plugin.json` |
 
-"Repackage" means adding that ecosystem's manifest to each plugin repo. The
-portable core is **Agent Skills** (`SKILL.md`), which Claude Code, Codex,
-Copilot CLI, and Cursor all support; Gemini uses a different extension model.
+Each plugin repo ships every manifest above, so it installs natively in any of
+these harnesses. The portable core is **Agent Skills** (`SKILL.md`), which
+Claude Code, Codex, Copilot CLI, and Cursor all support; Gemini uses an
+MCP-based extension model.
 
 ## ➕ Adding a plugin
 
