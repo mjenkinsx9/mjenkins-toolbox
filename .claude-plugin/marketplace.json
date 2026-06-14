@@ -3,7 +3,7 @@
   "owner": {
     "name": "mjenkinsx9"
   },
-  "description": "mjenkinsx9's personal catalog of Claude Code plugins. Add once, install anything: `/plugin marketplace add mjenkinsx9/mjenkins-toolbox`.",
+  "description": "mjenkinsx9's personal plugin catalog for AI coding agents. Add once, install anything: `/plugin marketplace add mjenkinsx9/mjenkins-toolbox`.",
   "plugins": [
     {
       "name": "skill-kit",
