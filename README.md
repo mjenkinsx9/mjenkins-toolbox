@@ -8,7 +8,7 @@
 
 [![validate](https://github.com/mjenkinsx9/mjenkins-toolbox/actions/workflows/validate.yml/badge.svg)](https://github.com/mjenkinsx9/mjenkins-toolbox/actions/workflows/validate.yml)
 ![Plugins](https://img.shields.io/badge/plugins-3-blue)
-![Harnesses](https://img.shields.io/badge/harnesses-Claude_Code_·_Codex_·_Copilot_·_more-6c5ce7)
+![Harnesses](https://img.shields.io/badge/harnesses-Claude_Code_·_Codex_·_Pi_·_Copilot_·_more-6c5ce7)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 </div>
@@ -18,8 +18,10 @@
 This repo is a **plugin marketplace**: small agent-specific catalogs that point
 at plugins living in their own repos. Claude-compatible agents read
 [`marketplace.json`](.claude-plugin/marketplace.json); Codex reads
-[`marketplace.json`](.agents/plugins/marketplace.json). The catalogs stay tiny;
-each plugin owns its code, CI, releases, and docs.
+[`marketplace.json`](.agents/plugins/marketplace.json). Pi does not have a
+marketplace catalog command, so Pi users install the plugin repos directly as
+Pi packages. The catalogs stay tiny; each plugin owns its code, CI, releases,
+and docs.
 
 > **Format note.** Every coding agent has its own plugin format and its own
 > marketplace command — there is no single cross-vendor standard yet. Each
@@ -27,7 +29,9 @@ each plugin owns its code, CI, releases, and docs.
 > install it in whichever agent you use — see
 > [Cross-harness support](#-cross-harness-support). Commands and doc links below
 > are verified against each tool's official documentation, but these interfaces
-> move quickly, so check the linked docs for your version.
+> move quickly, so check the linked docs for your version. Pi support uses Pi's
+> package and Agent Skills conventions rather than the Claude/Codex marketplace
+> manifests.
 
 ## 📦 Installation
 
@@ -90,6 +94,61 @@ Docs: [Codex plugins](https://developers.openai.com/codex/plugins) ·
 [Build a plugin](https://developers.openai.com/codex/plugins/build) ·
 [CLI reference](https://developers.openai.com/codex/cli/reference)
 
+### Pi
+
+Pi installs shared capabilities as **Pi packages**. There is no separate
+`marketplace add` command in Pi; the Pi equivalent is to install each plugin
+repo from this catalog:
+
+```bash
+pi install git:github.com/mjenkinsx9/skill-kit
+pi install git:github.com/mjenkinsx9/anchor
+pi install git:github.com/mjenkinsx9/autogit
+```
+
+If you keep local clones under `~/github`, install those instead:
+
+```bash
+pi install ~/github/skill-kit
+pi install ~/github/anchor
+pi install ~/github/autogit
+```
+
+Then restart Pi or run `/reload`, and use the skills by name:
+
+```text
+/skill:improving-skills
+/skill:anchor-review
+/skill:autogit-ops status
+```
+
+To update installed Pi packages:
+
+```bash
+pi update --extensions
+```
+
+For `autogit`, the skill can run status/on/off/undo/ship commands. Automatic
+after-turn shipping in Pi also needs autogit's Pi extension wired once, then a
+per-repo opt-in:
+
+```bash
+node ~/.pi/agent/git/github.com/mjenkinsx9/autogit/index.js setup
+```
+
+Then, inside the repo you want to auto-ship:
+
+```text
+/skill:autogit-ops on
+```
+
+Repos without `autogit on` are inert. If you installed from a local clone,
+you can also run `node ~/github/autogit/index.js setup`.
+
+Docs: [Pi packages](https://pi.dev/docs/packages) ·
+[Pi skills](https://pi.dev/docs/skills) ·
+[Pi extensions](https://pi.dev/docs/extensions)
+
 ### Gemini CLI
 
 Gemini installs **one extension repo at a time** (no shared catalog), and
@@ -132,7 +191,23 @@ Once the marketplace is added, install by name (Claude Code syntax shown):
 ```
 
 Updates ship from each plugin's own repo — pick them up with your harness's
-update command (e.g. `/plugin update <name>`).
+update command (e.g. `/plugin update <name>` or `pi update --extensions`).
+
+## 🥧 Pi capabilities
+
+Pi reads the portable `skills/` directories from each plugin repo when installed
+with `pi install git:github.com/mjenkinsx9/<plugin>`. It does not read the
+Claude `.claude-plugin/`, Codex `.codex-plugin/`, or marketplace JSON files.
+
+| Plugin | Pi capability |
+|---|---|
+| `skill-kit` | Loads `/skill:improving-skills` for improving and scoring Agent Skills. |
+| `anchor` | Loads `/skill:anchor-review` for review, diff/context gathering, repo learnings, status, and diagnostics using the bundled Anchor CLI. |
+| `autogit` | Loads `/skill:autogit-ops` for status/on/off/undo/ship. Automatic Pi after-turn shipping requires the one-time `node .../autogit/index.js setup` extension wiring plus per-repo `/skill:autogit-ops on`. |
+
+Pi package installs run with the user's local permissions. Review third-party
+plugin source before installing, and only enable `autogit` in repos where
+automatic commits and pushes are desired.
 
 ## 🌍 Cross-harness support
 
@@ -141,13 +216,14 @@ update command (e.g. `/plugin update <name>`).
 | Claude Code | `/plugin marketplace add` | `.claude-plugin/plugin.json` |
 | GitHub Copilot CLI | `copilot plugin marketplace add` | reads `.claude-plugin/plugin.json` |
 | OpenAI Codex | `codex plugin marketplace add` | `.codex-plugin/plugin.json` |
+| Pi | no marketplace command; install each repo with `pi install git:github.com/mjenkinsx9/<plugin>` | `skills/` via Pi package conventions; `autogit` can also wire a Pi extension |
 | Gemini CLI | `gemini extensions install <repo>` (no catalog) | `gemini-extension.json` (MCP) |
 | Cursor | none (official marketplace + `/add-plugin`) | `.cursor-plugin/plugin.json` |
 
-Each plugin repo ships every manifest above, so it installs natively in any of
-these harnesses. The portable core is **Agent Skills** (`SKILL.md`), which
-Claude Code, Codex, Copilot CLI, and Cursor all support; Gemini uses an
-MCP-based extension model.
+Each plugin repo ships the manifest needed by the manifest-based harnesses
+above and exposes portable skills for Pi. The portable core is **Agent Skills**
+(`SKILL.md`), which Claude Code, Codex, Copilot CLI, Cursor, and Pi all
+support; Gemini uses an MCP-based extension model.
 
 ## ➕ Adding a plugin
 
@@ -182,6 +258,11 @@ To list it for Codex, add the matching entry to
   "category": "Developer Tools"
 }
 ```
+
+Pi does not use this catalog file. To make a plugin usable from Pi, keep the
+portable skill content under `skills/` (directories with `SKILL.md`) or declare
+Pi resources in the plugin repo's `package.json` under a `pi` key. Users install
+that plugin repo directly with `pi install git:github.com/mjenkinsx9/my-plugin`.
 
 ## 📄 License
 
